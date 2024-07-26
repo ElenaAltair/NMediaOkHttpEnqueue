@@ -47,10 +47,11 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun save() {
+
         edited.value?.let {
 
-            repository.save(it, object : PostRepository.GetCallback<List<Post>> {
-                override fun onSuccess(posts: List<Post>) {
+            repository.save(it, object : PostRepository.GetCallback<Post> {
+                override fun onSuccess(post: Post) {
                     val postsN = _data.value?.posts.orEmpty()
                     _data.postValue(_data.value?.copy(posts = postsN))
                 }
@@ -98,8 +99,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
         if (post.likedByMe) {
             repository.likeById(id,
-                object : PostRepository.GetCallback<Post> {
-                    override fun onSuccess(post: Post) {
+                object : PostRepository.GetCallback<Unit> {
+                    override fun onSuccess(value: Unit) {
                         _data.postValue(FeedModel(posts = new))
                     }
 
@@ -110,8 +111,14 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
         } else {
             repository.unlikeById(id,
-                object : PostRepository.GetCallback<Post> {
+                object : PostRepository.GetCallback<Unit> {
+                    override fun onSuccess(value: Unit) {
+                        _data.postValue(FeedModel(posts = new))
+                    }
 
+                    override fun onError(e: Exception) {
+                        _data.postValue(FeedModel(error = true))
+                    }
                 })
 
         }
@@ -127,8 +134,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             )
         )
 
-        repository.removeById(id, object : PostRepository.GetCallback<List<Post>> {
-            override fun onSuccess(posts: List<Post>) {
+        repository.removeById(id, object : PostRepository.GetCallback<Unit> {
+            override fun onSuccess(value: Unit) {
                 val postsN = _data.value?.posts.orEmpty()
                 _data.postValue(_data.value?.copy(posts = postsN))
             }
