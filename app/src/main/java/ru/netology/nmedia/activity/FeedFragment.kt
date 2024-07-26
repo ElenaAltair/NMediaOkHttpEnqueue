@@ -9,6 +9,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
@@ -16,8 +17,11 @@ import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.viewmodel.PostViewModel
 
+
+
 class FeedFragment : Fragment() {
 
+    private val swipeRefreshLayout: SwipeRefreshLayout? = null
     private val viewModel: PostViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -68,6 +72,16 @@ class FeedFragment : Fragment() {
             findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }
 
+        //потянуть экран и обновить
+        binding.swipeToRefresh.setOnRefreshListener {
+            viewModel.loadPosts()
+            binding.swipeToRefresh.isRefreshing = false
+        }
+
+
         return binding.root
     }
+
+
+
 }
