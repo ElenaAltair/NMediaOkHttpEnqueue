@@ -41,20 +41,13 @@ class PostViewHolder(
     fun bind(post: Post) {
         binding.apply {
             author.text = post.author
-            published.text = post.published
+            published.text = post.published.toString()
             content.text = post.content
             // в адаптере
             like.isChecked = post.likedByMe
             like.text = "${post.likes}"
 
-            var url = ""
-            if (author.text.equals("Netology")) {
-                url = "http://10.0.2.2:9999/avatars/netology.jpg"
-            } else if (author.text.equals("Сбер")) {
-                url = "http://10.0.2.2:9999/avatars/sber.jpg"
-            } else if (author.text.equals("Тинькофф")) {
-                url = "http://10.0.2.2:9999/avatars/tcs.jpg"
-            }
+            var url = "http://10.0.2.2:9999/avatars/${post.authorAvatar}"
 
             // загрузка аваторок по ссылке с сервера
             Glide.with(binding.avatar)
@@ -75,7 +68,7 @@ class PostViewHolder(
 
             Glide.with(binding.image1)
                 .load(url)
-                .override(1000,700) 
+                .override(1000,700)
                 .centerCrop()
                 .placeholder(R.drawable.ic_loading_100dp)
                 .error(R.drawable.ic_error_100dp)
