@@ -39,11 +39,11 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         _data.value = FeedModel(loading = true)
         repository.getAll(object : PostRepository.GetCallback<List<Post>> {
             override fun onSuccess(posts: List<Post>) {
-                _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
+                _data.value = FeedModel(posts = posts, empty = posts.isEmpty())
             }
 
-            override fun onError(e: Exception) {
-                _data.postValue(FeedModel(error = true))
+            override fun onError(e: Throwable) {
+                _data.value = FeedModel(error = true)
             }
         })
     }
@@ -55,10 +55,10 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             repository.save(it, object : PostRepository.GetCallback<Post> {
                 override fun onSuccess(post: Post) {
                     val postsN = _data.value?.posts.orEmpty()
-                    _data.postValue(_data.value?.copy(posts = postsN))
+                    _data.value?.copy(posts = postsN)
                 }
 
-                override fun onError(e: Exception) {
+                override fun onError(e: Throwable) {
                     _data.postValue(FeedModel(error = true))
                 }
             })
@@ -101,24 +101,24 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
         if (post.likedByMe) {
             repository.likeById(id,
-                object : PostRepository.GetCallback<Unit> {
-                    override fun onSuccess(value: Unit) {
+                object : PostRepository.GetCallback<Post> {
+                    override fun onSuccess(post: Post) {
                         _data.postValue(FeedModel(posts = new))
                     }
 
-                    override fun onError(e: Exception) {
+                    override fun onError(e: Throwable) {
                         _data.postValue(FeedModel(error = true))
                     }
                 })
 
         } else {
             repository.unlikeById(id,
-                object : PostRepository.GetCallback<Unit> {
-                    override fun onSuccess(value: Unit) {
+                object : PostRepository.GetCallback<Post> {
+                    override fun onSuccess(post: Post) {
                         _data.postValue(FeedModel(posts = new))
                     }
 
-                    override fun onError(e: Exception) {
+                    override fun onError(e: Throwable) {
                         _data.postValue(FeedModel(error = true))
                     }
                 })
@@ -142,7 +142,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 _data.postValue(_data.value?.copy(posts = postsN))
             }
 
-            override fun onError(e: Exception) {
+            override fun onError(e: Throwable) {
                 _data.postValue(_data.value?.copy(posts = old))
             }
         })
