@@ -9,7 +9,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
@@ -18,10 +17,8 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 
-
 class FeedFragment : Fragment() {
 
-    private val swipeRefreshLayout: SwipeRefreshLayout? = null
     private val viewModel: PostViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -66,6 +63,7 @@ class FeedFragment : Fragment() {
 
         binding.retryButton.setOnClickListener {
             viewModel.loadPosts()
+
         }
 
         binding.fab.setOnClickListener {
@@ -81,7 +79,6 @@ class FeedFragment : Fragment() {
 
         return binding.root
     }
-
 
 
 }
